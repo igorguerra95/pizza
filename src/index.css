@@ -1,0 +1,133 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --font-display: 'Playfair Display', Georgia, serif;
+    --font-sans: 'Raleway', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+    /* Semantic HSL tokens */
+    /* Primária: Vermelho Pepperoni #E31837 -> 351, 80%, 49% */
+    --primary: 351 80% 49%;
+    --primary-foreground: 0 0% 100%;
+
+    /* Secundária: Laranja Forno/Brasa #FF6B35 -> 16, 100%, 60% */
+    --secondary: 16 100% 60%;
+    --secondary-foreground: 0 0% 100%;
+
+    /* Tons de Fundo Noturno e Carvão */
+    --background: 20 14% 6%;      /* #0f0d0c - preto brasa quente */
+    --foreground: 30 20% 96%;     /* #fbf8f5 - marfim acolhedor */
+
+    --card: 20 12% 9%;            /* #191614 */
+    --card-foreground: 30 20% 96%;
+
+    --muted: 20 10% 14%;          /* #262220 */
+    --muted-foreground: 25 15% 65%; /* #ada097 */
+
+    --accent: 16 90% 55%;
+    --accent-foreground: 0 0% 100%;
+
+    --border: 20 12% 16%;         /* hairline warm border */
+    --border-accent: 351 60% 30%;
+
+    --ring: 351 80% 49%;
+    --radius: 1rem;
+  }
+
+  * {
+    border-color: hsl(var(--border));
+  }
+
+  body {
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+    font-family: var(--font-sans);
+    min-height: 100vh;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    selection-background-color: #E31837;
+    selection-color: #ffffff;
+  }
+
+  ::selection {
+    background-color: #E31837;
+    color: #ffffff;
+  }
+}
+
+/* Utilitários tipográficos e de estilo visual */
+.font-display {
+  font-family: var(--font-display);
+}
+
+.font-sans {
+  font-family: var(--font-sans);
+}
+
+/* Hairline borders e acabamentos sofisticados */
+.border-hairline {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.border-hairline-accent {
+  border: 1px solid rgba(227, 24, 55, 0.28);
+}
+
+.bg-glass {
+  background: rgba(18, 14, 13, 0.75);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.bg-glass-card {
+  background: linear-gradient(145deg, rgba(28, 22, 20, 0.85) 0%, rgba(17, 13, 12, 0.95) 100%);
+  backdrop-filter: blur(12px);
+}
+
+.bg-gradient-pepperoni {
+  background: linear-gradient(135deg, #E31837 0%, #FF6B35 100%);
+}
+
+.bg-gradient-glow {
+  background: radial-gradient(circle at 50% 0%, rgba(227, 24, 55, 0.18) 0%, rgba(255, 107, 53, 0.05) 50%, transparent 80%);
+}
+
+.text-gradient-fire {
+  background: linear-gradient(135deg, #FFF1EE 20%, #FFA885 60%, #FF6B35 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.text-gradient-pepperoni {
+  background: linear-gradient(135deg, #FF7B8E 0%, #E31837 50%, #FF6B35 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.shadow-glow-sm {
+  box-shadow: 0 4px 20px -2px rgba(227, 24, 55, 0.35);
+}
+
+.shadow-glow-lg {
+  box-shadow: 0 10px 40px -4px rgba(227, 24, 55, 0.45);
+}
+
+.shadow-warm-card {
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.7), 0 0 1px 1px rgba(255, 255, 255, 0.06);
+}
+
+/* Scrollbar sutil */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #0f0d0c;
+}
+::-webkit-scrollbar-thumb {
+  background: #2b221f;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #E31837;
+}

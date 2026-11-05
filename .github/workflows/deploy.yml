@@ -1,0 +1,94 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build-and-deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Detect project root directory
+        id: locate-root
+        run: |
+          echo "=== Procurando package.json no repositório ==="
+          # Se o package.json estiver na raiz
+          if [ -f "package.json" ]; then
+            TARGET_DIR="."
+          else
+            # Procura o primeiro diretório contendo package.json (ignora node_modules)
+            FOUND_FILE=$(find . -maxdepth 3 -not -path "*/node_modules/*" -name "package.json" | head -n 1)
+            if [ -n "$FOUND_FILE" ]; then
+              TARGET_DIR=$(dirname "$FOUND_FILE")
+            else
+              TARGET_DIR="."
+            fi
+          fi
+          echo "Diretório do projeto identificado: $TARGET_DIR"
+          echo "dir=$TARGET_DIR" >> $GITHUB_OUTPUT
+          
+          # Se package-lock.json existir, define caminho do lockfile para cache
+          if [ -f "$TARGET_DIR/package-lock.json" ]; then
+            echo "lockfile=$TARGET_DIR/package-lock.json" >> $GITHUB_OUTPUT
+            echo "has_lock=true" >> $GITHUB_OUTPUT
+          else
+            echo "has_lock=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Setup Node.js (with cache if lockfile exists)
+        if: steps.locate-root.outputs.has_lock == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: ${{ steps.locate-root.outputs.lockfile }}
+
+      - name: Setup Node.js (without cache fallback)
+        if: steps.locate-root.outputs.has_lock != 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        working-directory: ${{ steps.locate-root.outputs.dir }}
+        run: |
+          if [ -f "package-lock.json" ]; then
+            echo "package-lock.json encontrado. Executando npm ci..."
+            npm ci
+          else
+            echo "package-lock.json não encontrado no diretório. Executando npm install..."
+            npm install
+          fi
+
+      - name: Build static site
+        working-directory: ${{ steps.locate-root.outputs.dir }}
+        run: npm run build
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ${{ steps.locate-root.outputs.dir }}/dist
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
